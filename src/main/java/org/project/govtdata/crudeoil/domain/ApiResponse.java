@@ -4,14 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse {
+public class ApiResponse implements Serializable {
 
     private String index_name;
     private String title;
