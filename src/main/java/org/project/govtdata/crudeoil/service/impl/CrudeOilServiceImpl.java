@@ -1,6 +1,5 @@
 package org.project.govtdata.crudeoil.service.impl;
 
-import org.project.govtdata.crudeoil.config.CrudeOilProperties;
 import org.project.govtdata.crudeoil.domain.ApiRequest;
 import org.project.govtdata.crudeoil.domain.ApiResponse;
 import org.project.govtdata.crudeoil.service.CrudeOilService;
@@ -8,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-
-import java.net.URI;
 
 @Service
 public class CrudeOilServiceImpl implements CrudeOilService {

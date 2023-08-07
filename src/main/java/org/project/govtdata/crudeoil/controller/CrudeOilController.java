@@ -6,11 +6,8 @@ import org.project.govtdata.crudeoil.domain.ApiResponse;
 import org.project.govtdata.crudeoil.service.CrudeOilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.BodyInserter;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -18,10 +15,15 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api")
 public class CrudeOilController {
-    @Autowired
+
     private CrudeOilService crudeOilService;
 
-    @GetMapping(value = "/crudeoil")
+    @Autowired
+    public CrudeOilController(CrudeOilService crudeOilService) {
+        this.crudeOilService = crudeOilService;
+    }
+
+    @GetMapping(value = "/crude-oil")
     @ResponseStatus(HttpStatus.OK)
     public Mono<ResponseEntity<ApiResponse>> getCrudeOil(@RequestBody ApiRequest request) {
         log.info(request.toString());
