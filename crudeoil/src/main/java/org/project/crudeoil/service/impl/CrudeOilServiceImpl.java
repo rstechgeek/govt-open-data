@@ -1,8 +1,8 @@
-package org.project.govtdata.crudeoil.service.impl;
+package org.project.crudeoil.service.impl;
 
-import org.project.govtdata.crudeoil.domain.ApiRequest;
-import org.project.govtdata.crudeoil.domain.ApiResponse;
-import org.project.govtdata.crudeoil.service.CrudeOilService;
+import org.project.crudeoil.domain.ApiRequest;
+import org.project.crudeoil.domain.ApiResponse;
+import org.project.crudeoil.service.CrudeOilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 public class CrudeOilServiceImpl implements CrudeOilService {
 
 
-    private WebClient webClient;
+    private final WebClient webClient;
 
     @Autowired
     public CrudeOilServiceImpl(WebClient webClient) {

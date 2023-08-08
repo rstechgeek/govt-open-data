@@ -1,4 +1,4 @@
-package org.project.govtdata.crudeoil.domain;
+package org.project.crudeoil.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
