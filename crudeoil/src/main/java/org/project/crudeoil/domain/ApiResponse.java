@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.reactive.function.server.ServerResponse;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -28,9 +26,9 @@ public class ApiResponse implements Serializable {
     private String catalog_uuid;
     private String source;
     private String org_type;
-    ArrayList<Object> org = new ArrayList<Object>();
-    ArrayList<Object> sector = new ArrayList<Object>();
-    ArrayList<Object> field = new ArrayList<Object>();
+    ArrayList<Object> org = new ArrayList<>();
+    ArrayList<Object> sector = new ArrayList<>();
+    ArrayList<Object> field = new ArrayList<>();
     TargetBucket targetBucket;
     private String message;
     private String version;
@@ -39,6 +37,6 @@ public class ApiResponse implements Serializable {
     private float count;
     private String limit;
     private String offset;
-    ArrayList<Object> records = new ArrayList<Object>();
+    ArrayList<Object> records = new ArrayList<>();
 
 }
