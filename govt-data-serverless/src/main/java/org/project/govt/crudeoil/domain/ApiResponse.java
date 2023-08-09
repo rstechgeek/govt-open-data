@@ -1,4 +1,4 @@
-package org.project.crudeoil.domain;
+package org.project.govt.crudeoil.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +26,9 @@ public class ApiResponse implements Serializable {
     private String catalog_uuid;
     private String source;
     private String org_type;
-    ArrayList<Object> org = new ArrayList<>();
-    ArrayList<Object> sector = new ArrayList<>();
-    ArrayList<Object> field = new ArrayList<>();
+    ArrayList<Object> org;
+    ArrayList<Object> sector;
+    ArrayList<Object> field;
     TargetBucket targetBucket;
     private String message;
     private String version;
@@ -37,6 +37,6 @@ public class ApiResponse implements Serializable {
     private float count;
     private String limit;
     private String offset;
-    ArrayList<Object> records = new ArrayList<>();
+    ArrayList<Object> records;
 
 }

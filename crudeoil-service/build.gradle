@@ -25,6 +25,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.4'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.2.2'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'

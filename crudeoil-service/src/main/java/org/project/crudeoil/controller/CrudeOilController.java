@@ -22,7 +22,7 @@ public class CrudeOilController {
         this.crudeOilService = crudeOilService;
     }
 
-    @GetMapping(value = "/crude-oil")
+    @GetMapping(value = "/v1/crude-oil")
     @ResponseStatus(HttpStatus.OK)
     public Mono<ResponseEntity<ApiResponse>> getCrudeOil(@RequestBody ApiRequest request) {
         return crudeOilService.getCrudeOilData(request)

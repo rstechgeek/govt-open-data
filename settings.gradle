@@ -1,3 +1,5 @@
 rootProject.name = 'govt-data'
 
-include 'crudeoil'
+include 'crudeoil-service'
+include 'crudeoil-lambda'
+include 'govt-data-serverless'
