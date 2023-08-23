@@ -21,6 +21,6 @@ public class CrudeOilHandler implements RequestHandler<ApiRequest, ApiResponse> 
     @Override
     public ApiResponse handleRequest(ApiRequest input, Context context) {
         initialize(context);
-        return crudeOilService.getCrudeOilData(input).block();
+        return crudeOilService.getCrudeOilData(input, context);
     }
 }

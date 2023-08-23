@@ -1,7 +1,9 @@
 package org.project.crudeoilfunction.service.impl;
 
 
+import com.amazonaws.services.lambda.runtime.Context;
 import org.project.crudeoilfunction.config.CrudeOilConfiguration;
+import org.project.crudeoilfunction.dao.CrudeOilDao;
 import org.project.crudeoilfunction.domain.ApiRequest;
 import org.project.crudeoilfunction.domain.ApiResponse;
 import org.project.crudeoilfunction.service.CrudeOilService;
@@ -13,7 +15,7 @@ public class CrudeOilServiceImpl implements CrudeOilService {
 
 
     @Override
-    public Mono<ApiResponse> getCrudeOilData(ApiRequest request) {
+    public ApiResponse getCrudeOilData(ApiRequest request, Context context) {
         return CrudeOilConfiguration.getWebClient().get()
                 .uri(uriBuilder -> uriBuilder
                         .queryParam("format", request.getFormat())
@@ -21,6 +23,9 @@ public class CrudeOilServiceImpl implements CrudeOilService {
                         .queryParam("limit", request.getLimit()).build())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(ApiResponse.class);
+                .bodyToMono(ApiResponse.class)
+                .doOnSuccess(apiResponse -> new CrudeOilDao().saveCrudeOil(apiResponse, context))
+                .block();
+//        return null;
     }
 }

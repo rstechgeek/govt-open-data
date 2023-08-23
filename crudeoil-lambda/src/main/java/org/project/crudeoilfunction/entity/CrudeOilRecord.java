@@ -1,20 +1,13 @@
-package org.project.crudeoilfunction.domain;
+package org.project.crudeoilfunction.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.project.crudeoilfunction.domain.TargetBucket;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ApiResponse implements Serializable {
-
+//@DynamoDbBean
+public class CrudeOilRecord {
     private String index_name;
     private String title;
     private String desc;
@@ -27,9 +20,9 @@ public class ApiResponse implements Serializable {
     private String catalog_uuid;
     private String source;
     private String org_type;
-    List<String> org;
-    List<String> sector;
-    List<Field> field;
+    ArrayList<Object> org;
+    ArrayList<Object> sector;
+    ArrayList<Object> field;
     TargetBucket targetBucket;
     private String message;
     private String version;
@@ -38,7 +31,7 @@ public class ApiResponse implements Serializable {
     private float count;
     private String limit;
     private String offset;
-    List<OilRecord> records;
+    ArrayList<Object> records;
 
 //    @DynamoDbPartitionKey
 //    public String getIndex_name() {

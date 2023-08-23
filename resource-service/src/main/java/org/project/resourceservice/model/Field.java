@@ -1,4 +1,4 @@
-package org.project.crudeoilfunction.domain;
+package org.project.resourceservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,9 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiRequest implements Serializable {
-    private Integer offset;
-    private Integer limit;
+public class Field implements Serializable {
+    private String name;
     private String format;
-
+    private String id;
+    private String type;
 }
