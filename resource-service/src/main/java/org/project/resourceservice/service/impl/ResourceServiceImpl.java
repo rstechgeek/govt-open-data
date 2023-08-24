@@ -1,30 +1,27 @@
 package org.project.resourceservice.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.project.resourceservice.annotation.ExecutionTime;
 import org.project.resourceservice.common.Common;
 import org.project.resourceservice.config.CommonProperties;
-import org.project.resourceservice.repository.ResourceRepository;
 import org.project.resourceservice.entity.Resource;
 import org.project.resourceservice.model.ApiRequest;
 import org.project.resourceservice.model.ApiResponse;
 import org.project.resourceservice.model.RecordDetail;
+import org.project.resourceservice.repository.ResourceRepository;
 import org.project.resourceservice.service.ResourceService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service

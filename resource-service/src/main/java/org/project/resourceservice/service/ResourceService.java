@@ -8,11 +8,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ResourceService {
-    public Mono<ApiResponse> getResources(ApiRequest request);
+     Mono<ApiResponse> getResources(ApiRequest request);
 
-    public void loadAllResource();
+     void loadAllResource();
 
-    public Mono<RecordDetail> getResource(ApiRequest request);
+     Mono<RecordDetail> getResource(ApiRequest request);
 
-    public Flux<Resource> getActiveResource();
+     Flux<Resource> getActiveResource();
 }

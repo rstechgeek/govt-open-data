@@ -18,8 +18,13 @@ import java.time.Duration;
 //@EnableTransactionManagement
 @EnableR2dbcRepositories(basePackages = {"org.project.resourceservice.repository"})
 public class ResourceConfig implements WebFluxConfigurer {
+
+    private final CommonProperties commonProperties;
+
     @Autowired
-    private CommonProperties commonProperties;
+    public ResourceConfig(CommonProperties commonProperties) {
+        this.commonProperties = commonProperties;
+    }
 
     @Override
     public void configureHttpMessageCodecs(ServerCodecConfigurer configure) {
