@@ -34,8 +34,16 @@ public class RecordDetail implements Serializable {
     private String org_type;
     private List<String> org;
     private List<String> sector;
-    private List<Field> field;
+    private List<Object> field;
+    private String message;
+    private String version;
+    private String status;
+    private float total;
+    private float count;
+    private String limit;
+    private String offset;
     @JsonProperty("target_bucket")
     private TargetBucket target_bucket;
+    private List<Object> records;
 
 }

@@ -1,7 +1,9 @@
 package org.project.resourceservice;
 
+import lombok.extern.slf4j.Slf4j;
 import org.project.resourceservice.model.ApiRequest;
 import org.project.resourceservice.model.ApiResponse;
+import org.project.resourceservice.model.RecordDetail;
 import org.project.resourceservice.service.ResourceService;
 import org.project.resourceservice.service.impl.ResourceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import reactor.core.publisher.Mono;
 
+@Slf4j
 @SpringBootApplication
 public class ResourceServiceApplication {
 
@@ -25,10 +29,13 @@ public class ResourceServiceApplication {
 
             @Override
             public void run(String... args) throws Exception {
-                // ApiResponse response = service.getResources(ApiRequest.builder().format("json").limit(10).offset(0).build());
-                service.loadAllResource();
-                // System.out.println(response.toString());
-//                System.exit(0);
+//                service.loadAllResource();
+//                service.getResource(
+//                        ApiRequest.builder().resourceId("c21789e6-f6c3-4178-a9a1-a6ac9e7d1abc")
+//                                .limit(100).offset(1).format("json").build())
+//                        .subscribe(recordDetail -> log.info(" Record " + recordDetail.toString()));
+                service.getActiveResource().count().subscribe(count -> log.info("Total Active resources " + count));
+
             }
 
         };

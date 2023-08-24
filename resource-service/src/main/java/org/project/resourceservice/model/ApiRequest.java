@@ -14,4 +14,5 @@ public class ApiRequest implements Serializable {
     private Integer offset;
     private Integer limit;
     private String format;
+    private String resourceId;
 }
