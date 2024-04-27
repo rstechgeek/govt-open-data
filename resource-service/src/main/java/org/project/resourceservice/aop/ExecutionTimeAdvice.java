@@ -5,6 +5,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 @Aspect
@@ -13,11 +17,20 @@ public class ExecutionTimeAdvice {
 
     @Around("@annotation(org.project.resourceservice.annotation.ExecutionTime)")
     public Object executionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
-        Object result = joinPoint.proceed();
-        long endTime = System.currentTimeMillis();
-        log.info("Method " + joinPoint.getSignature().getName() + " has taken " + (endTime - startTime) + " ms.");
-        return result;
-
+        AtomicLong startTime = new AtomicLong();
+        AtomicLong endTime = new AtomicLong();
+        Object proceed = joinPoint.proceed();
+        if (proceed instanceof Mono) {
+            Mono mono = (Mono) joinPoint.proceed();
+            mono.doOnSubscribe(subscription -> startTime.set(System.currentTimeMillis())).doFinally(obj -> endTime.set(System.currentTimeMillis()));
+        } else if (proceed instanceof Flux) {
+            Flux flux = (Flux) joinPoint.proceed();
+            flux.doOnSubscribe(subscription -> startTime.set(System.currentTimeMillis())).doFinally(obj -> endTime.set(System.currentTimeMillis()));
+        }
+//        else{
+//
+//        }
+//        log.info("Method " + joinPoint.getSignature().getName() + " has taken " + (endTime - startTime) + " ms.");
+        return proceed;
     }
 }

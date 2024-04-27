@@ -12,7 +12,4 @@ public interface ResourceService {
 
      void loadAllResource();
 
-     Mono<RecordDetail> getResource(ApiRequest request);
-
-     Flux<Resource> getActiveResource();
 }

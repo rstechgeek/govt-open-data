@@ -1,6 +1,7 @@
 package org.project.resourceservice;
 
 import lombok.extern.slf4j.Slf4j;
+import org.project.resourceservice.model.ApiRequest;
 import org.project.resourceservice.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,13 +25,13 @@ public class ResourceServiceApplication {
 
             @Override
             public void run(String... args) throws Exception {
-//                service.loadAllResource();
+                service.loadAllResource();
 //                service.getResource(
 //                        ApiRequest.builder().resourceId("c21789e6-f6c3-4178-a9a1-a6ac9e7d1abc")
 //                                .limit(100).offset(1).format("json").build())
 //                        .subscribe(recordDetail -> log.info(" Record " + recordDetail.toString()));
-                service.getActiveResource().count().subscribe(count -> log.info("Total Active resources " + count));
-
+//                service.getActiveResource().map( resource ->  {log.info(resource.getId());return resource;}).subscribe();
+//                System.exit(0);
             }
 
         };
