@@ -2,6 +2,7 @@ package org.project.resourceservice.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.project.resourceservice.common.Common;
 import org.project.resourceservice.config.CommonProperties;
 import org.project.resourceservice.entity.Resource;
 import org.project.resourceservice.exception.ResourceException;
@@ -10,6 +11,8 @@ import org.project.resourceservice.model.RecordDetail;
 import org.project.resourceservice.repository.ResourceRepository;
 import org.project.resourceservice.service.RecordDetailService;
 import org.project.resourceservice.util.ConvertUtil;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -20,31 +23,28 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class RecordDetailServiceImpl implements RecordDetailService {
+    @Value("${open.data.gov.apikey}")
+    private String apiKey;
     private final WebClient webClient;
 
-    public RecordDetailServiceImpl(WebClient webClient, ResourceRepository resourceRepository, CommonProperties properties) {
+    public RecordDetailServiceImpl(WebClient webClient) {
         this.webClient = webClient;
     }
 
     @Override
-    public Flux<RecordDetail> getRecordDetails(ApiRequest request) {
-//        if (Objects.isNull(request.getResourceId())) {
-//            return Mono.empty();
-//        }
-//        Mono<RecordDetail> resourceOptional = this.resourceRepository.findById(request.getResourceId())
-//                .flatMap(this::mapActiveRecordDetail)
-//        if (resourceOptional.isPresent()) {
-//            Resource resource = resourceOptional.get();
-//            return this.webClient.get().uri(uriBuilder ->
-//                            uriBuilder.path(Common.PATH_RESOURCE.concat("/").concat(resource.getIndex_id()))
-//                                    .queryParam("api-key", commonProperties.getApiKey())
-//                                    .queryParam("format", request.getFormat())
-//                                    .queryParam("offset", request.getOffset())
-//                                    .queryParam("limit", request.getLimit()).build())
-//                    .accept(MediaType.APPLICATION_JSON).retrieve().bodyToMono(RecordDetail.class);
-//        }
-
-        return Flux.empty();
+    public Flux<RecordDetail> getRecordDetailsFromOGDServer(ApiRequest request) {
+        if (Objects.isNull(request.getResourceId())) {
+            return Flux.error(new ResourceException("", "Resource id cannot be empty."));
+        }
+        return this.webClient.get().uri(uriBuilder ->
+                        uriBuilder.path(Common.PATH_RESOURCE.concat("/").concat(request.getResourceId()))
+                                .queryParam("api-key", apiKey)
+                                .queryParam("format", request.getFormat())
+                                .queryParam("offset", request.getOffset())
+                                .queryParam("limit", request.getLimit()).build())
+                .accept(MediaType.APPLICATION_JSON).exchangeToFlux(clientResponse -> clientResponse.statusCode().is2xxSuccessful()
+                        ? clientResponse.bodyToFlux(RecordDetail.class) :
+                        Flux.error(new ResourceException("", "Error while calling API " + clientResponse.statusCode())));
     }
 
     private Mono<RecordDetail> mapActiveRecordDetail(Resource resource) {

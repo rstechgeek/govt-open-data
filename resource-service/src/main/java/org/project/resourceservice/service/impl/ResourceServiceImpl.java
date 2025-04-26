@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.*;
@@ -29,7 +30,7 @@ public class ResourceServiceImpl implements ResourceService {
     private final WebClient webClient;
     private final ResourceRepository resourceRepository;
 
-    public ResourceServiceImpl(WebClient webClient, ResourceRepository resourceRepository, ObjectMapper mapper, CommonProperties properties) {
+    public ResourceServiceImpl(WebClient webClient, ResourceRepository resourceRepository) {
         this.webClient = webClient;
         this.resourceRepository = resourceRepository;
     }
@@ -62,27 +63,46 @@ public class ResourceServiceImpl implements ResourceService {
         //first get total no of records available
 //        AtomicInteger total = new AtomicInteger();
         int limit = 1000;
-        this.getResources(request).flatMap(apiResponse -> {
-                    int total = 0;
-                    float noOfResource = apiResponse.getTotal();
-                    if (noOfResource >= Integer.MIN_VALUE && noOfResource <= Integer.MAX_VALUE) {
-                        total = Math.round(noOfResource);
-                        log.info("Total {} resources", total);
-                    } else {
-                        log.error("Total no of resource float value is out of range to int value.");
-                    }
-                    return Mono.just(total);
-                })
-                .flatMapMany(noOfRecords -> Flux.range(0, noOfRecords / limit))
-                .map(pageNumber -> ApiRequest.builder().format("json").limit(limit).offset(limit * (pageNumber)).build()).log()
-                .flatMap(this::getResources)
-//                .delayElements(Duration.ofMillis(500))
-                .subscribe(this::saveResources);
+        int concurrencyLevel = 5; // Tune as needed
+        int maxRetries = 3;
+        Duration retryBackoff = Duration.ofSeconds(2);
 
+        this.getResources(request)
+                .flatMapMany(apiResponse -> {
+                    float noOfResource = apiResponse.getTotal();
+                    int total = (noOfResource >= Integer.MIN_VALUE && noOfResource <= Integer.MAX_VALUE)
+                            ? Math.round(noOfResource)
+                            : 0;
+
+                    if (total == 0) {
+                        log.warn("Total number of resources is zero or invalid.");
+                        return Flux.empty();
+                    }
+
+                    log.info("Total {} resources", total);
+                    int totalPages = (int) Math.ceil((double) total / limit);
+
+                    return Flux.range(0, totalPages)
+                            .map(pageNumber -> ApiRequest.builder()
+                                    .format("json")
+                                    .limit(limit)
+                                    .offset(limit * pageNumber)
+                                    .build());
+                })
+                .flatMap(objRequest -> this.getResources(objRequest)
+                                .retryWhen(Retry.backoff(maxRetries, retryBackoff)
+                                        .onRetryExhaustedThrow((spec, signal) -> signal.failure()))
+                                .doOnError(e -> log.error("Failed to fetch data for request: {}", objRequest, e)),
+                        concurrencyLevel // limit parallel requests
+                )
+                .doOnNext(this::saveResources).log()
+                .doOnError(e -> log.error("Unexpected error during resource loading", e))
+                .onErrorContinue((throwable, obj) -> log.warn("Continuing despite error on: {}", obj))
+                .subscribe();
     }
 
 
-    private void saveResources(ApiResponse apiResponse) {
+    public void saveResources(ApiResponse apiResponse) {
 
         if (Objects.nonNull(apiResponse.getRecordDetails()))
             Flux.fromIterable(apiResponse.getRecordDetails()).ofType(RecordDetail.class).map(recordDetail ->

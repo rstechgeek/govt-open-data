@@ -21,16 +21,13 @@ public class ExecutionTimeAdvice {
         AtomicLong endTime = new AtomicLong();
         Object proceed = joinPoint.proceed();
         if (proceed instanceof Mono) {
-            Mono mono = (Mono) joinPoint.proceed();
+            Mono<?> mono = (Mono<?>) joinPoint.proceed();
             mono.doOnSubscribe(subscription -> startTime.set(System.currentTimeMillis())).doFinally(obj -> endTime.set(System.currentTimeMillis()));
         } else if (proceed instanceof Flux) {
-            Flux flux = (Flux) joinPoint.proceed();
+            Flux<?> flux = (Flux<?>) joinPoint.proceed();
             flux.doOnSubscribe(subscription -> startTime.set(System.currentTimeMillis())).doFinally(obj -> endTime.set(System.currentTimeMillis()));
         }
-//        else{
-//
-//        }
-//        log.info("Method " + joinPoint.getSignature().getName() + " has taken " + (endTime - startTime) + " ms.");
+        log.info("Method {} has taken {} ms.", joinPoint.getSignature().getName(), endTime.get() - startTime.get());
         return proceed;
     }
 }

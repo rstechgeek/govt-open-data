@@ -3,7 +3,7 @@
 
 
     <property name="LOGS" value="./logs" />
-    <property name="FILE_NAME" value="Resource-Service"/>
+    <property name="FILE_NAME" value="resource-service"/>
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
