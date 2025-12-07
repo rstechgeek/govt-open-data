@@ -6,7 +6,7 @@ import reactor.core.publisher.Flux;
 
 public interface RecordDetailService {
 
-    Flux<RecordDetail> getRecordDetailsFromOGDServer(ApiRequest request);
+    Flux<RecordDetail> getRecordDetails(ApiRequest request);
 
-//    Flux<Resource> getActiveResource();
+    // Flux<Resource> getActiveResource();
 }

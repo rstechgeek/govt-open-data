@@ -7,19 +7,16 @@ import org.project.resourceservice.model.RecordDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
 @Component
-public class RecordDetailJsonConverter  {
+public class RecordDetailJsonConverter {
 
     private ObjectMapper objectMapper;
 
-    @Autowired
     public RecordDetailJsonConverter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-
-//    @Override
+    // @Override
     public String convertToDatabaseColumn(RecordDetail recordDetail) {
         try {
             return objectMapper.writeValueAsString(recordDetail);
@@ -28,7 +25,7 @@ public class RecordDetailJsonConverter  {
         }
     }
 
-//    @Override
+    // @Override
     public RecordDetail convertToEntityAttribute(String string) {
         try {
             return objectMapper.readValue(string, RecordDetail.class);

@@ -30,7 +30,7 @@ public class RecordDetailServiceImpl implements RecordDetailService {
     }
 
     @Override
-    public Flux<RecordDetail> getRecordDetailsFromOGDServer(ApiRequest request) {
+    public Flux<RecordDetail> getRecordDetails(ApiRequest request) {
         if (Objects.isNull(request.getResourceId())) {
             return Flux.error(new ResourceException("", "Resource id cannot be empty."));
         }

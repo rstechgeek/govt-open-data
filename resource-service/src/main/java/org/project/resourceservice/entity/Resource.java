@@ -5,8 +5,6 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.beans.Transient;
-import java.io.Serializable;
-import java.util.Objects;
 
 import io.r2dbc.postgresql.codec.Json;
 

@@ -1,6 +1,6 @@
 module org.example.godfx {
-    requires javafx.controls;
-    requires javafx.fxml;
+    requires transitive javafx.controls;
+    requires transitive javafx.fxml;
     requires javafx.web;
     requires java.desktop;
     requires java.net.http;
