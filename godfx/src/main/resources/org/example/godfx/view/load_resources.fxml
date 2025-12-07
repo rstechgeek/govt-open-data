@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="20.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.godfx.LoadResourcesController">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <children>
+      <Label styleClass="header-label" text="Manage Resources" />
+      <HBox alignment="CENTER" spacing="20.0">
+         <children>
+            <VBox alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label styleClass="label" text="Total Resources:" />
+                  <Label fx:id="totalResourcesLabel" styleClass="label-bright" text="Loading...">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label styleClass="label" text="Last Loaded:" />
+                  <Label fx:id="lastLoadedLabel" styleClass="label-bright" text="Loading...">
+                      <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" spacing="20.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onLoadResourcesClick" text="Load Resources" />
+            <Button mnemonicParsing="false" onAction="#onCleanResourcesClick" style="-fx-text-fill: white; -fx-background-color: #f38ba8;" text="Clean Resources" />
+         </children>
+      </HBox>
+      <TextArea fx:id="logTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" styleClass="text-area-dark" />
+      <Button mnemonicParsing="false" onAction="#onBackButtonClick" text="Back to Main View" />
+   </children>
+</VBox>

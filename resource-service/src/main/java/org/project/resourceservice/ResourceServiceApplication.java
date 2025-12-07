@@ -1,10 +1,5 @@
 package org.project.resourceservice;
 
-import org.project.resourceservice.model.ApiRequest;
-import org.project.resourceservice.service.RecordDetailService;
-import org.project.resourceservice.service.ResourceService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

@@ -10,9 +10,9 @@ import java.io.IOException;
 public class GODApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(GODApplication.class.getResource("main.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(GODApplication.class.getResource("view/main.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Hello!");
+        stage.setTitle("Govt Open Data (GOD) Platform");
         stage.setScene(scene);
         stage.show();
     }

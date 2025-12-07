@@ -4,6 +4,7 @@ module org.example.godfx {
     requires javafx.web;
     requires java.desktop;
     requires java.net.http;
+    requires com.fasterxml.jackson.databind;
     requires org.slf4j;
 
     requires org.controlsfx.controls;
@@ -15,6 +16,7 @@ module org.example.godfx {
     requires com.almasb.fxgl.all;
 
     opens org.example.godfx to javafx.fxml;
+    opens org.example.godfx.model to com.fasterxml.jackson.databind;
 
     exports org.example.godfx;
 }
