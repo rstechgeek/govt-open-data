@@ -17,6 +17,10 @@ if ! command_exists mvn; then
     exit 1
 fi
 
+# Kill likely stuck processes
+echo "Cleaning up port 8091..."
+lsof -ti:8091 | xargs kill -9 2>/dev/null || echo "No process found on port 8091."
+
 # Start PostgreSQL container
 echo "Starting PostgreSQL container..."
 if [ "$(docker ps -q -f name=govt-postgres)" ]; then
@@ -48,13 +52,25 @@ echo "PostgreSQL is ready."
 
 # Start resource-service
 echo "Starting resource-service..."
-cd resource-service
-# Run in background and save PID
-mvn spring-boot:run > ../resource-service.log 2>&1 &
-RESOURCE_PID=$!
-echo "resource-service starting with PID $RESOURCE_PID. Logs: resource-service.log"
+if cd resource-service; then
+    # Build resource-service
+    echo "Building resource-service..."
+    if ! mvn clean install -DskipTests; then
+        echo "Error: resource-service build failed."
+        exit 1
+    fi
 
-# Wait for resource-service to be ready (naive check: wait for port 8091)
+    # Run in background and save PID
+    mvn spring-boot:run > ../resource-service.log 2>&1 &
+    RESOURCE_PID=$!
+    echo "resource-service starting with PID $RESOURCE_PID. Logs: resource-service.log"
+    cd ..
+else
+    echo "Error: Directory resource-service not found."
+    exit 1
+fi
+
+# Wait for resource-service to be ready
 echo "Waiting for resource-service to start on port 8091..."
 TIMEOUT=60
 COUNTER=0
@@ -71,10 +87,24 @@ echo "resource-service is running."
 
 # Start godfx
 echo "Starting godfx..."
-cd ../godfx
-mvn javafx:run
+if cd godfx; then
+    # Build godfx
+    echo "Building godfx..."
+    if ! mvn clean install -DskipTests; then
+        echo "Error: godfx build failed."
+        echo "Stopping resource-service..."
+        kill $RESOURCE_PID
+        exit 1
+    fi
 
-# Cleanup on exit (optional, depending on preference. Usually we might want to keep services running)
-# For this script, since godfx is the UI, maybe we want to kill resource-service when godfx closes?
-echo "godfx closed. Stopping resource-service..."
-kill $RESOURCE_PID
+    echo "Running godfx..."
+    mvn javafx:run | tee godfx.log
+    
+    # Cleanup on exit
+    echo "godfx closed. Stopping resource-service..."
+    kill $RESOURCE_PID
+else
+    echo "Error: Directory godfx not found."
+    kill $RESOURCE_PID
+    exit 1
+fi

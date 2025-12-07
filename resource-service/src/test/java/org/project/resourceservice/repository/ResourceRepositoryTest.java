@@ -1,5 +1,6 @@
 package org.project.resourceservice.repository;
 
+import io.r2dbc.postgresql.codec.Json;
 import org.junit.jupiter.api.Test;
 import org.project.resourceservice.entity.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class ResourceRepositoryTest {
                 String records = "{\"key\": \"value\"}";
                 Resource resource = Resource.builder()
                                 .index_id(indexId)
-                                .records(records)
+                                .records(Json.of(records))
                                 .build();
 
                 resourceRepository.save(resource)

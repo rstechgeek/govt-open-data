@@ -13,6 +13,7 @@ class ResourceServiceApplicationTests {
 
 	@Container
 	@ServiceConnection
+	@SuppressWarnings("resource")
 	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
 			.withDatabaseName("govtdb")
 			.withUsername("ravi")

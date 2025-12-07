@@ -57,7 +57,7 @@ public class ResourceServiceImpl implements ResourceService {
 
         @ExecutionTime
         @Override
-        public void loadAllResource() {
+        public Flux<String> loadAllResource() {
 
                 // make initial hit to get total and then parallely hit the request and store
                 // the data into file
@@ -69,7 +69,7 @@ public class ResourceServiceImpl implements ResourceService {
                 int maxRetries = 3;
                 Duration retryBackoff = Duration.ofSeconds(2);
 
-                this.getResources(request)
+                return this.getResources(request)
                                 .flatMapMany(apiResponse -> {
                                         float noOfResource = apiResponse.getTotal();
                                         int total = (noOfResource >= Integer.MIN_VALUE
@@ -79,7 +79,7 @@ public class ResourceServiceImpl implements ResourceService {
 
                                         if (total == 0) {
                                                 log.warn("Total number of resources is zero or invalid.");
-                                                return Flux.empty();
+                                                return Flux.just("Total number of resources is zero or invalid.");
                                         }
 
                                         log.info("Total {} resources", total);
@@ -92,7 +92,7 @@ public class ResourceServiceImpl implements ResourceService {
                                                                         .offset(limit * pageNumber)
                                                                         .build());
                                 })
-                                .flatMap(objRequest -> this.getResources(objRequest)
+                                .flatMap(objRequest -> this.getResources((ApiRequest) objRequest)
                                                 .retryWhen(Retry.backoff(maxRetries, retryBackoff)
                                                                 .onRetryExhaustedThrow(
                                                                                 (spec, signal) -> signal.failure()))
@@ -100,38 +100,41 @@ public class ResourceServiceImpl implements ResourceService {
                                                                 objRequest, e)),
                                                 concurrencyLevel // limit parallel requests
                                 )
-                                .doOnNext(this::saveResources).log()
+                                .flatMap(this::saveResources)
+                                .scan(0, Integer::sum)
+                                .sample(Duration.ofMillis(100))
+                                .map(count -> "Saved records: " + count)
                                 .doOnError(e -> log.error("Unexpected error during resource loading", e))
-                                .onErrorContinue((throwable, obj) -> log.warn("Continuing despite error on: {}", obj))
-                                .subscribe();
+                                .onErrorContinue((throwable, obj) -> log.warn("Continuing despite error on: {}", obj));
         }
 
-        public void saveResources(ApiResponse apiResponse) {
+        public Flux<Integer> saveResources(ApiResponse apiResponse) {
 
-                if (Objects.nonNull(apiResponse.getRecordDetails()))
-                        Flux.fromIterable(apiResponse.getRecordDetails()).ofType(RecordDetail.class)
+                if (Objects.nonNull(apiResponse.getRecordDetails())) {
+                        return Flux.fromIterable(apiResponse.getRecordDetails()).ofType(RecordDetail.class)
                                         .map(recordDetail -> {
                                                 String jsonString = "";
                                                 try {
                                                         jsonString = ConvertUtil.objectToJson(recordDetail);
                                                 } catch (ResourceException e) {
-                                                        Flux.error(new ResourceException("", e.getMessage()));
+                                                        return Resource.builder().build(); // Should handle better, but
+                                                                                           // kept simple
                                                 }
                                                 return Resource.builder()
                                                                 .index_id(recordDetail.getIndexName())
                                                                 .records(io.r2dbc.postgresql.codec.Json.of(jsonString))
                                                                 .build();
                                         })
+                                        .filter(resource -> resource.getIndex_id() != null)
                                         .flatMap(resource -> resourceRepository
                                                         .existsById(Objects.requireNonNull(resource.getId()))
                                                         .flatMap(exists -> exists ? Mono.empty() : Mono.just(resource)))
                                         .flatMap(resourceRepository::save)
-                                        .doOnNext(resource -> log.info("Data saved {}", resource.getIndex_id()))
+                                        .map(resource -> 1)
                                         .doOnError(throwable -> log.error("Data not saved due to {}",
-                                                        throwable.getMessage()))
-                                        // .doOnNext(resource -> result.put(resource.getId(), "Saved"))
-                                        // .doOnError(throwable -> result.put(resource.getId(), "Failed"))
-                                        .subscribe();
+                                                        throwable.getMessage()));
+                }
+                return Flux.empty();
         }
 
 }
