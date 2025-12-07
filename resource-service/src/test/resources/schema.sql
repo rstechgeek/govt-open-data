@@ -1,5 +1,4 @@
 create table if not exists resource (
 index_id varchar(100) primary key,
-record jsonb not null
+records jsonb not null
 );
-
